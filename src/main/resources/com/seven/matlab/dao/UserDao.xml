@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybaTis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 数据库操作 -->
+<mapper namespace="com.seven.matlab.dao.UserDao">
+    
+    <resultMap id="select_basic" type="com.seven.pojo.vo.UserVo">
+        <result column="ID" jdbcType="VARCHAR" property="id"/>
+        <result column="NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="AGE" jdbcType="INTEGER" property="age"/>
+    </resultMap>
+
+    <sql id="select_society">
+        T.ID AS id,
+        T.NAME AS name,
+        T.AGE AS age
+    </sql>
+    
+    <sql id="where_basic">
+        <if test="name != null and name !=''">
+            AND NAME = #{name ,jdbcType=VARCHAR},
+        </if>
+        <if test="age !=null">
+            AND AGE = #{age,jdbcType=INTEGER}
+        </if>
+        <if test="id !=null">
+            AND ID = #{iD,jdbcType=VARCHAR}
+        </if>
+    </sql>
+
+    <insert id="insert" parameterType="com.seven.pojo.dto.UserDto">
+        INSERT INTO user (
+                          ID,
+                          NAME,
+                          AGE
+        )VALUES (
+                 #{id,jdbcType=VARCHAR},
+                 #{name ,jdbcType=VARCHAR},
+                 #{age,jdbcType=INTEGER}
+                        )
+    </insert>
+    <update id="update">
+        UPDATE user
+            <set>
+                <if test="name != null and name !=''">
+                    NAME = #{name ,jdbcType=VARCHAR},
+                </if>
+                <if test="age !=null">
+                    age = #{age,jdbcType=INTEGER}
+                </if>
+            </set>
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+    <delete id="delete" parameterType="string">
+        DELETE FROM user WHERE ID = #{id,jdbcType=VARCHAR}
+    </delete>
+    <select id="select" resultType="com.seven.pojo.vo.UserVo">
+        SELECT
+        <include refid="select_society"/>
+        FROM
+        user T
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <include refid="where_basic"/>
+        </trim>
+    </select>
+
+</mapper>
